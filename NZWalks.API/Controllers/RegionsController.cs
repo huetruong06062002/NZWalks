@@ -105,5 +105,39 @@ namespace NZWalks.API.Controllers
             };
             return CreatedAtAction(nameof(GetById), new {id = regionDto.Id}, regionDto);
         }
+
+        //Update region
+        //PUT: https://localhost:portname/api/regions/{id}
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionRequstDto updateRegionRequstDto)
+        {
+            //Check if region exists
+            var regionDomainModel = dbContext.Regions.FirstOrDefault(x => x.Id == id);
+
+            if(regionDomainModel == null)
+            {
+                return NotFound();
+            }
+
+            //Map DTO to Domain model
+            regionDomainModel.Code = updateRegionRequstDto.Code;
+            regionDomainModel.Name = updateRegionRequstDto.Name;
+            regionDomainModel.RegionImageUrl = updateRegionRequstDto.RegionImageUrl;
+
+            dbContext.SaveChanges();
+
+            //Convert Domain Model to DTO
+            var regionDto = new RegionDto()
+            {
+                Id = regionDomainModel.Id,
+                Code = regionDomainModel.Code,
+                Name = regionDomainModel.Name,
+                RegionImageUrl = regionDomainModel.RegionImageUrl
+            };
+
+            return Ok(regionDto);
+
+        }
     }
 }
