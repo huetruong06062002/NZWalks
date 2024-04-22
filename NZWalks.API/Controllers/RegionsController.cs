@@ -54,16 +54,27 @@ namespace NZWalks.API.Controllers
 
             //var regions = dbContext.Regions.Find(id);
 
-            var regions = dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var regionDomain = dbContext.Regions.FirstOrDefault(x => x.Id == id);
 
             
 
-            if (regions == null)
+            if (regionDomain == null)
             {
                 return NotFound();
             }
 
-            return Ok(regions);
+            //Map/Convert Region Domain Model to Region DTO
+            //
+            var regionDto = new RegionDto()
+            {
+                Id = regionDomain.Id,
+                Code = regionDomain.Code,
+                Name = regionDomain.Name,
+                RegionImageUrl = regionDomain.RegionImageUrl
+            };
+            
+            //Return DTO back to client
+            return Ok(regionDto);
         }
     }
 }
