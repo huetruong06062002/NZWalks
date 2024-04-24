@@ -10,7 +10,7 @@ using NZWalks.API.Reponsitories;
 
 namespace NZWalks.API.Controllers
 {
-    //https://localhost:1234/api/regions
+    //https://localhost:portname/api/regions
     [Route("api/[controller]")]
     [ApiController]
     public class RegionsController : ControllerBase
