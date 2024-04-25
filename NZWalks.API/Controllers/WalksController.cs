@@ -27,13 +27,18 @@ namespace NZWalks.API.Controllers
 
         public async Task<IActionResult> Create([FromBody] AddWalkRequestDto addWalkRequestDto)
         {
-            //Map DTO to Domain Model
-            var walkDomainModel = mapper.Map<Walk>(addWalkRequestDto);
+            if (ModelState.IsValid)
+            {
+                //Map DTO to Domain Model
+                var walkDomainModel = mapper.Map<Walk>(addWalkRequestDto);
 
-            await walkRepository.CreateAsync(walkDomainModel);
+                await walkRepository.CreateAsync(walkDomainModel);
 
-            //Mapp Domain model to DTO
-            return Ok(mapper.Map<WalkDto>(walkDomainModel));
+                //Mapp Domain model to DTO
+                return Ok(mapper.Map<WalkDto>(walkDomainModel));
+            }
+           
+            return BadRequest(ModelState);
         }
 
         //GET Walks
@@ -71,18 +76,22 @@ namespace NZWalks.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, UpdateWalkRequestDto updateWalkRequestDto)
         {
-            //Map Dto to Domain Model
-            var walkDomainModel = mapper.Map<Walk>(updateWalkRequestDto);
+            if (ModelState.IsValid)
+            { 
+                //Map Dto to Domain Model
+                var walkDomainModel = mapper.Map<Walk>(updateWalkRequestDto);
 
-            walkDomainModel = await walkRepository.UpdateAsync(id, walkDomainModel);
+                walkDomainModel = await walkRepository.UpdateAsync(id, walkDomainModel);
 
-            if(walkDomainModel == null)
-            {
-                return NotFound();
+                if (walkDomainModel == null)
+                {
+                    return NotFound();
+                }
+
+                //Map Domain Model to DTO
+                return Ok(mapper.Map<WalkDto>(walkDomainModel));
             }
-
-            //Map Domain Model to DTO
-            return Ok(mapper.Map<WalkDto>(walkDomainModel));
+            return BadRequest(ModelState);
         }
 
         //Delete a Walk By Id
