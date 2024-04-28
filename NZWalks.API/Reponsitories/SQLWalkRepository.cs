@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NZWalks.API.Reponsitories
 {
@@ -31,9 +32,23 @@ namespace NZWalks.API.Reponsitories
            return exsingtingWalk;
         }
 
-        public async Task<List<Walk>> GetAllAsync()
+        public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null)
         {
-            return await dbContext.Walks.Include("Difficulty").Include("Region").ToListAsync();
+
+            var walks = dbContext.Walks.Include("Difficulty").Include("Region").AsQueryable();
+            //AsQueryable(): This is converting the results into an IQueryable, which allows for further querying (like filtering or sorting) before the data is actually retrieved from the database.
+            
+            //Filtering
+            if(string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
+            {
+                if(filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(x => x.Name.Contains(filterQuery));
+                }
+            }
+
+            return await walks.ToListAsync();
+            //return await dbContext.Walks.Include("Difficulty").Include("Region").ToListAsync();
         }
 
         public async Task<Walk?> GetByIdAsync(Guid id)
