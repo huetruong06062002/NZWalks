@@ -6,11 +6,11 @@ namespace NZWalks.API.Data
 {
     public class NZWalksAuthDbContext : IdentityDbContext
     {
-        public NZWalksAuthDbContext(DbContextOptions<NZWalksDbContext> options) : base(options)
+        public NZWalksAuthDbContext(DbContextOptions<NZWalksAuthDbContext> options) : base(options)
         {
 
         }
-        override protected void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
@@ -28,7 +28,7 @@ namespace NZWalks.API.Data
                 },
                  new IdentityRole
                 {
-                   Id = readerRoleId,
+                   Id = writerRoleId,
                    ConcurrencyStamp = readerRoleId,
                    Name = "Writer",
                    NormalizedName = "Writer".ToUpper()
