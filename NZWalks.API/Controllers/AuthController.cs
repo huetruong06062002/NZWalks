@@ -9,6 +9,10 @@ namespace NZWalks.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+
+
+
+
         private readonly UserManager<IdentityUser> userManager;
 
         public AuthController(UserManager<IdentityUser> userManager)
@@ -37,7 +41,7 @@ namespace NZWalks.API.Controllers
                     identityResult = await userManager.AddToRolesAsync(identityUser, registerRequestDto.Roles);
                     if(identityResult.Succeeded)
                     {
-                        return Ok("User was register! Please login.");
+                        return Ok("User was registerd! Please login.");
                     }
                 }
             }
