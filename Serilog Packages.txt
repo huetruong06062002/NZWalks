@@ -1,0 +1,3 @@
+Serilog 
+Serilog.AspNetCore
+Serilog.Sinks.Console

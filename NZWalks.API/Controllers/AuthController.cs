@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Data;
+using Azure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.Models.DTO;
+using NZWalks.API.Reponsitories;
 
 namespace NZWalks.API.Controllers
 {
@@ -14,10 +17,11 @@ namespace NZWalks.API.Controllers
 
 
         private readonly UserManager<IdentityUser> userManager;
-
-        public AuthController(UserManager<IdentityUser> userManager)
+        private readonly ITokenRepository tokenRepository;
+        public AuthController(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository)
         {
             this.userManager = userManager;
+            this.tokenRepository = tokenRepository;
         }
 
         //POST: /api/Auth/Register
@@ -62,8 +66,23 @@ namespace NZWalks.API.Controllers
 
                 if (checkPasswordResult)
                 {
-                    //Create Token
-                    return Ok();
+
+                    //Get Roles for this user
+
+                    var roles = await userManager.GetRolesAsync(user);
+
+                    if (roles != null)
+                    {
+                        //Create Token
+                        var jwtToken = tokenRepository.CreateJWTToken(user, roles.ToList());
+                       
+                        var response = new LoginResponseDto
+                        {
+                            JwtToken = jwtToken
+                        };
+                        return Ok(response);
+                    }
+
                 }
             }
             return BadRequest("Username or password is incorrect");
