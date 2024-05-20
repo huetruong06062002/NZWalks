@@ -41,7 +41,6 @@ namespace NZWalks.API.Controllers
 
             try
             {
-                throw new Exception("This is a custom exeption");
 
                 //Get Data From Database - Domain model
                 var regionsDomain = await regionReponsitory.GetAllAsync();
